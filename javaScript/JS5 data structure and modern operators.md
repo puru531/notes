@@ -824,7 +824,7 @@ This is false, and it's set to Try Again
 */
 ```
 
-## String and its methods
+# String and its methods
 
 Strings are primitive values in JavaScript, but they also have built-in methods that allow you to manipulate and work with strings. String is immutable. Here are some common string methods:
 

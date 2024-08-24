@@ -14,7 +14,7 @@ if (hasDriversLicense) console.log("I can drive"); //will not printed because va
 // If we use 'use strict', we can avoid this error.
 ```
 
-## Functions
+# Functions
 
 ### Function Fundamentals
 
@@ -141,7 +141,7 @@ function greet(name) {
 }
 ```
 
-## Arrays
+# Arrays
 
 ### Array methods
 
@@ -166,7 +166,7 @@ arr.indexOf(3); //Knowing position of an element in an array, if it is not there
 arr.includes(3); //Knowing if an element is present in an array or not, returns true,/fals, (strict equality, no type coersion)
 ```
 
-## Objects
+# Objects
 
 A data structure which combines key-value pairs in one variable.
 
@@ -221,7 +221,9 @@ const obj2 = {
     this.age = 2037 - this.birthYear; //this means same object
   },
   getSummary: function () {
-    return `${this.firstName} is a ${this.age} year old ${this.job}, and he has ${this.hasDriversLicense ? "a" : "no"} driver's license`;
+    return `${this.firstName} is a ${this.age} year old ${
+      this.job
+    }, and he has ${this.hasDriversLicense ? "a" : "no"} driver's license`;
   },
 };
 
@@ -233,7 +235,7 @@ console.log(obj2.age);
 console.log(obj2.getSummary());
 ```
 
-## Loops
+# Loops
 
 ### For loop
 

@@ -20,7 +20,7 @@ Javascript is a high-level, prototype-based object-oriented, multi-paradigm, int
 <br>
 Event loop : takes long running tasks, executes them in the 'background' and puts them back in the main thread once they are finished.
 
-## The JavaScript engine
+# The JavaScript engine
 
 A JS Engine is a computer program that executes JS code. Every browser has its own JS engine, but most well known engine is Google's V8 engine.
 <br><br>
@@ -115,9 +115,9 @@ cont firstName = 'Puru';
 calcAge(1998);
 ```
 
-## Variable Environment : Hoisting and the TDZ
+# Variable Environment : Hoisting and the TDZ
 
-### Hoisting in Javascript
+## Hoisting in Javascript
 
 **Hoisting** : Makes some types of variable accessible/usable in the code before they are actually declared, "Varibales lifted to the top of their scope". <br>
 Before execution, code is scanned for variable declarations, and for each variables, a new property is created in the variable environment object.
@@ -141,7 +141,7 @@ let and const variables
 function expression and arrows : Depends how they are created, if using var or let/const, these functions are variables and they behave exact same way as variables.
 ```
 
-### Variable Hoisting example
+## Variable Hoisting example
 
 ```js run
 console.log(me); // undefinded
@@ -153,7 +153,7 @@ let job = "Programmer"; //not available in window object
 const year = 1998; //not available in window object
 ```
 
-### Function Hoisting Example
+## Function Hoisting Example
 
 ```js run
 //accessing before functions are defined.
@@ -191,12 +191,12 @@ var addExprWithVar = function (a, b) {
 var addArrowWithVar = (a, b) => a + b;
 ```
 
-## The 'this' keyword
+# The 'this' keyword
 
 Special variavble that is created for every execution context (every function). Takes the value of (point to) the "owner" of the function in which the 'this' keyword is used. <br>
 'this' is NOT static. It depends on how the function is called, and its value is only assigned when the function is actually called. <br>
 
-### Four ways in which functions can be called (other ways are call, bind, apply)
+## Four ways in which functions can be called (other ways are call, bind, apply)
 
 - **Method** : 'this' keyword points to the Object on which the method is called.
 
@@ -385,7 +385,7 @@ const addArrow = (a, b) => {
 addArrow(2, 5, 7, 8, 6);
 ```
 
-## Primitives vs. Objects (Primitive vs. Reference types)
+# Primitives vs. Objects (Primitive vs. Reference types)
 
 ```js run
 //primitive
