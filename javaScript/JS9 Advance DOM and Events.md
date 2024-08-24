@@ -66,9 +66,9 @@ WINDOW : It is the global object in the browser. It is the parent of all objects
 
 - **Inheritance:** All the child types will also get access to the properties and methods of the parent type. (e.g. HTMLElement has access to all the properties and methods of Element and Node.)
 
-## Selecting, Creating, and Deleting Elements
+# Selecting, Creating, and Deleting Elements
 
-### Selecting Elements
+## Selecting Elements
 
 Selecting entire document of the page:
 
@@ -83,26 +83,26 @@ console.log(document.head); // <head>...</head>
 console.log(document.body); // <body>...</body>
 ```
 
-#### Selecting elements by their tag name:
+### Selecting elements by their tag name:
 
 ```js run
 const allParagraphs = document.getElementsByTagName("p"); // HTMLCollection of all <p> elements in the document (eg. HTMLCollection(3) [p, p, p]). It is live collection. It means if we add or remove any element from the collection, it will automatically update the collection.
 console.log(allParagraphs);
 ```
 
-#### Selecting elements by their ID:
+### Selecting elements by their ID:
 
 ```js run
 const myId = document.getElementById("my-id"); // <p id="my-id">...</p> (element with id "my-id")
 ```
 
-#### Selecting elements by their class name:
+### Selecting elements by their class name:
 
 ```js run
 const myClass = document.getElementsByClassName("my-class"); // HTMLCollection of all elements with class "my-class"
 ```
 
-#### querySelector and querySelectorAll
+### querySelector and querySelectorAll
 
 ```js run
 console.log(document.querySelector("p")); // <p>...</p> (first <p> element in the document)
@@ -124,14 +124,14 @@ console.log(document.querySelector("p.my-class#my-id")); // <p id="my-id" class=
 console.log(document.querySelectorAll("p.my-class#my-id")); // NodeList of all <p> elements with id "my-id" and class "my-class"
 ```
 
-### HTMLCollection vs NodeList:
+## HTMLCollection vs NodeList:
 
 - HTMLCollection is live collection. It means if we add or remove any element from the collection, it will automatically update the collection.
 - NodeList is not live collection. It means if we add or remove any element from the collection, it will not automatically update the collection.
 - NodeList is more powerful than HTMLCollection. NodeList has more methods and properties than HTMLCollection.
 - NodeList is returned by querySelectorAll() and HTMLCollection is returned by getElementsByTagName(), getElementsByClassName(), etc.
 
-### Creating and inserting Elements
+## Creating and inserting Elements
 
 ```js run
 // Create a new element
@@ -179,7 +179,7 @@ after() will insert the element after the given element as sibling.
 */
 ```
 
-### Deleting Elements
+## Deleting Elements
 
 ```js run
 /*
@@ -202,7 +202,7 @@ btnCloseMsg.addEventListener("click", function () {
 });
 ```
 
-### insertAdjacentHTML
+## insertAdjacentHTML
 
 - insertAdjacentHTML is a method that allows you to insert HTML into a specific position in the DOM.
 - It takes two arguments:
@@ -241,11 +241,11 @@ Visual representation of the positions:
 <!------- afterend ------->
 ```
 
-## Styles, Attributes, and Classes
+# Styles, Attributes, and Classes
 
-### Styles
+## Styles
 
-#### Setting Inline Styles
+### Setting Inline Styles
 
 ```js run
 /*
@@ -261,7 +261,7 @@ message.style.backgroundColor = "blue"; // <div class="message" style="backgroun
 message.style.width = "120px"; // <div class="message" style="background-color: blue; width: 120px;"><h1>Hello World</h1></div>
 ```
 
-#### Getting Inline Style Values
+### Getting Inline Style Values
 
 ```js run
 /*
@@ -276,7 +276,7 @@ console.log(message.style.backgroundColor); // blue --> style property is used t
 console.log(message.style.height); // "" --> If the style is not set inline, it will return an empty string.
 ```
 
-#### Getting Computed Styles
+### Getting Computed Styles
 
 ```js run
 //html
@@ -302,7 +302,7 @@ console.log(getComputedStyle(message).height); // 150px --> getComputedStyle() m
 message.style.height = `${parseFloat(getComputedStyle(message).height) + 40}px`; // <div class="message" style="background-color: blue; width: 120px; height: 190px;"><h1>Hello World</h1></div>
 ```
 
-### CSS Variables / Custom Properties
+## CSS Variables / Custom Properties
 
 Set the value of the CSS variable.
 
@@ -320,11 +320,11 @@ Set the value of the CSS variable.
 document.documentElement.style.setProperty("--primary-color", "orangered"); // Set the value of the CSS variable --primary-color to orangered in the root element (html element).
 ```
 
-### Attributes
+## Attributes
 
 Attributes are the extra information that we can add to the HTML elements. (e.g. id, class, src, href, etc.).
 
-#### Getting Attributes
+### Getting Attributes
 
 ```js run
 //<img src="logo.png" alt="Logo" class="nav__logo" designer="Puru">
@@ -345,7 +345,7 @@ console.log(logo.getAttribute("src")); // logo.png --> gives the relative URL of
 //Same with href attribute
 ```
 
-#### Setting Attributes
+### Setting Attributes
 
 ```js run
 //<img src="logo.png" alt="Logo" class="nav__logo" designer="Puru">
@@ -359,7 +359,7 @@ logo.setAttribute("designer", "Purushottam"); // <img src="logo.png" alt="New Lo
 logo.setAttribute("company", "CodePuru"); // <img src="logo.png" alt="New Logo" class="nav__logo" designer="Purushottam" company="CodePuru"> --> new custom attribute is added to the element.
 ```
 
-#### Data Attributes
+### Data Attributes
 
 ```js run
 // <div data-id="123"></div>
@@ -389,7 +389,7 @@ delete card.dataset.cardNumber;
 console.log(card); // <div class="card">Some content</div>
 ```
 
-### Classes
+## Classes
 
 `element.classList` is used to add, remove, toggle, and check classes of an element.
 
@@ -414,6 +414,8 @@ card.classList.toggle("new-class"); // <div class="card">Some content</div> --> 
 //contains()
 console.log(card.classList.contains("card")); // true --> contains() method is used to check if the element has a specific class. It will return true if the class is present, otherwise false.
 ```
+
+# Element position, sizes, and scrolling
 
 ## Offset
 
@@ -512,3 +514,5 @@ btnScrollTo.addEventListener("click", function (e) {
   section1.scrollIntoView({ behavior: "smooth" }); // scrollIntoView() method is used to scroll the element into view.
 });
 ```
+
+# Event and Event Handlers
