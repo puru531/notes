@@ -516,3 +516,233 @@ btnScrollTo.addEventListener("click", function (e) {
 ```
 
 # Event and Event Handlers
+
+An event is an action that occurs as a result of user interaction or other actions. (e.g. click, mouseover, keydown, etc.)
+
+## Event Listeners
+
+`addEventListener()` method is used to add an event listener to the element. It takes two arguments: the event name and the callback function.
+
+`removeEventListener()` method is used to remove the event listener from the element.
+
+```js run
+// <h1>Hello World</h1>
+
+const h1 = document.querySelector("h1");
+const showAlert = function () {
+  alert("Hello World");
+};
+h1.addEventListener("mouseenter", showAlert); // addEventListener() method is used to add an event listener to the element.
+
+// remove the event listener
+h1.removeEventListener("mouseenter", showAlert); // removeEventListener() method is used to remove the event listener from the element.
+
+h1.onmouseenter = function () {
+  h1.style.color = "red";
+  alert("Mouse entered");
+}; // old way to add event listener
+
+/*
+ addEventListener() method is better because:
+ - it allows us to add multiple event listeners to the same element.
+ - it allows us to remove the event listener.
+*/
+```
+
+Mouse events :
+
+- **mouseenter** : Fires when the mouse pointer enters the element.
+- **mouseleave**: Fires when the mouse pointer leaves the element.
+- **mouseover**: Fires when the mouse pointer is moved onto the element.
+- **mouseout**: Fires when the mouse pointer is moved out of the element.
+- **mousemove**: Fires when the mouse pointer is moved over the element.
+- **mousedown**: Fires when a mouse button is pressed down on the element.
+- **mouseup**: Fires when a mouse button is released on the element.
+- **click**: Fires when the element is clicked.
+- **dblclick**: Fires when the element is double-clicked.
+- **contextmenu**: Fires when the right mouse button is clicked on the element, opening the context menu.
+- **wheel**: Fires when the mouse wheel is scrolled while the element is in focus.
+- **drag**: Fires when an element is dragged.
+
+Stopping right-click in the document and show an alert message : right click is not allowed:
+
+```js run
+document.addEventListener("contextmenu", function (e) {
+  e.preventDefault(); // prevent the default behavior of the context menu.
+  alert("Right click is not allowed");
+});
+```
+
+Keyboard events :
+
+- **keydown**: Fires when a key is pressed down.
+- **keyup**: Fires when a key is released.
+- **keypress**: Fires when a key is pressed down and then released.
+
+```js run
+document.addEventListener("keydown", function (e) {
+  console.log(e.key); // a --> key that is pressed
+  console.log(e.code); // KeyA --> code of the key that is pressed
+  console.log(e.ctrlKey); // true --> whether the control key is pressed
+  console.log(e.altKey); // false --> whether the alt key is pressed
+  console.log(e.shiftKey); // false --> whether the shift key is pressed
+  console.log(e.metaKey); // false --> whether the meta key is pressed
+});
+```
+
+## Event Propagation: Bubbling and Capturing
+
+A Sample DOM tree:
+
+```
+    ------------
+    | Document |
+    ------------
+        |
+        |
+        |
+    -----------
+    | Element |
+    | <html>  |
+    -----------
+        |
+        |
+        |
+    ----------
+    | Element |
+    | <body>  |
+    -----------
+        |
+        |
+        |
+    ------------
+    |  Element |
+    | <section>|
+    ------------
+        |
+        |
+        |
+    -----------
+    | Element |
+    |  <p>    |
+    -----------
+        |
+        |
+        |
+    -----------
+    | Element |
+    |  <a>    |
+    -----------
+```
+
+When a click happens on the link `<a>` element, it will trigger the click event, the event is generated on the root element (Document) and from there `capuring phase` starts from the root element and event goes down to the target element. And as the event travels down the DOM tree, it will pass through every parent element of the target element.
+
+As soon as the event reaches the target element, the `target phase` begins. Where events can be handled on the target element using event listeners.
+
+After reaching the target element, the event travels back up the DOM tree in the `bubbling phase`. And just like the capturing phase, the event will pass through every parent element of the target element. (Not sibling elements). It is as if the event happened to each parent element as well.
+
+Which means if we add an event listener to the parent element of the target element, it will also be triggered when the event bubbles up to the parent element. In this case, if we add an event listener to the `<section>` element, it will also be triggered when the `<a>` element is clicked.
+
+This whole process is called `event propagation`.
+
+NOT all events bubble up. Some of them happens only on the target element. (e.g. focus, blur, load, unload, etc.)
+
+Example of event propagation, in which the click event bubbles up the DOM tree:
+
+```html
+<html>
+  <head>
+    <title>A Simple Page</title>
+  </head>
+  <body>
+    <section>
+      <p>A paragraph with a <a>link</a></p>
+      <p>A second paragraph</p>
+    </section>
+    <section>
+      <img src="dom.png" alt="The DOM" />
+    </section>
+  </body>
+</html>
+```
+
+```js run
+const section = document.querySelector("section");
+const link = document.querySelector("a");
+
+link.addEventListener("click", function (e) {
+  e.preventDefault(); // prevent the default behavior of the link.
+  alert("Link clicked");
+});
+
+section.addEventListener("click", function (e) {
+  alert("Section clicked");
+});
+
+document.addEventListener("click", function (e) {
+  alert("Document clicked");
+});
+
+link.click(); // simulate a click on the link
+
+/*
+If we click on the link, the alert messages will be shown in the following order:
+- Link clicked
+- Section clicked
+- Document clicked
+
+This is because the click event bubbles up the DOM tree.
+*/
+```
+
+### Event Bubbling
+
+```html
+<nav class="nav">
+  <ul class="nav__links">
+    <li class="nav__item"><a href="#" class="nav__link">Link 1</a></li>
+    <li class="nav__item"><a href="#" class="nav__link">Link 1</a></li>
+    <li class="nav__item"><a href="#" class="nav__link">Link 1</a></li>
+  </ul>
+</nav>
+```
+
+```js run
+document.querySelector(".nav__link").addEventListener("click", function (e) {
+  this.style.backgroundColor = "orange";
+  console.log("LINK", e.target);
+});
+
+document.querySelector(".nav__links").addEventListener("click", function (e) {
+  this.style.backgroundColor = "blue"; //this refers to the element on which the event listener is attached.
+  console.log("CONTAINER", e.target);
+
+  // Here e.currentTarget is same as this keyword and e.target is the element on which the event is triggered. currentTarget is the element on which the event listener is attached.
+
+  // e.target  = <a href="#" class="nav__link" style="background-color: orange;">Link 1</a>
+  // e.currentTarget = <ul class="nav__links" style="background-color: blue;">...</ul>
+});
+
+document.querySelector(".nav").addEventListener("click", function (e) {
+  this.style.backgroundColor = "red";
+  console.log("NAV", e.target);
+});
+
+document.querySelector(".nav__link").click(); // simulate a click on the link
+
+/*
+If we click on the link, the console messages will be shown in the following order:
+
+- LINK <a href="#" class="nav__link" style="background-color: orange;">Link 1</a>
+- CONTAINER <a href="#" class="nav__link" style="background-color: orange;">Link 1</a>
+- NAV <a href="#" class="nav__link" style="background-color: orange;">Link 1</a>
+
+And the background colors of the elements will be changed accordingly.
+
+
+
+The target property of the event object will always be the element on which the event listener is attached.
+
+This is because the click event bubbles up the DOM tree.
+*/
+```
