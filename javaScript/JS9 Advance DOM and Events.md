@@ -746,3 +746,5 @@ The target property of the event object will always be the element on which the 
 This is because the click event bubbles up the DOM tree.
 */
 ```
+
+192 - 11:35
