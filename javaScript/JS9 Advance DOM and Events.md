@@ -695,7 +695,7 @@ This is because the click event bubbles up the DOM tree.
 */
 ```
 
-### Event Bubbling and Capturing example
+### Event Bubbling
 
 ```html
 <nav class="nav">
@@ -764,4 +764,92 @@ document.querySelector(".nav__links").addEventListener("click", function (e) {
   this.style.backgroundColor = "blue";
   console.log("CONTAINER", e.target);
 }); // this event listener will not be triggered
+```
+
+### Event capturing
+
+Event is captured when the come down from the root element to the target element. It is opposite to the event bubbling.
+
+All our event listeners are in the bubbling phase by default, meaning they listen for events during the bubbling phase. Which is the default behavior of addEventListener() method. Because the third argument of addEventListener() method is by default false. If we set it to true, the event listener will listen for events during the capturing phase.
+
+listen for events during the capturing phase:
+
+```js run
+document.querySelector(".nav__link").addEventListener(
+  "click",
+  function (e) {
+    this.style.backgroundColor = "orange";
+    console.log("LINK", e.target);
+  },
+  true // true --> listen for events during the capturing phase
+);
+```
+
+**But Capturing phase is not not so relevant and is not used much.**
+
+In the other hand, bubbling phase is very useful for event delegation.
+
+## Event Delegation
+
+Event delegation is a technique in which we attach a single event listener to a parent element, instead of attaching multiple event listeners to multiple child elements. This is useful when we have multiple child elements that we want to listen for the same event.
+
+```html
+<nav class="nav">
+  <ul class="nav__links">
+    <li class="nav__item">
+      <a href="#section--1" class="nav__link">Link 1</a>
+    </li>
+    <li class="nav__item">
+      <a href="#section--2" class="nav__link">Link 1</a>
+    </li>
+    <li class="nav__item">
+      <a href="#section--3" class="nav__link">Link 1</a>
+    </li>
+  </ul>
+</nav>
+
+<section class="section" id="section--1">Section 1</section>
+<section class="section" id="section--2">Section 2</section>
+<section class="section" id="section--3">Section 3</section>
+```
+
+SMOOTH scrolling to the section with the id specified in the href attribute of the link
+
+**Without event delegation:**
+
+```js run
+document.querySelectorAll(".nav__link").forEach(function (link) {
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+    const id = this.getAttribute("href");
+
+    document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+  });
+  /*
+    Here, we are attaching an event listener to each link element. And when the link is clicked, we are SMOOTH scrolling to the section with the id specified in the href attribute of the link.
+  */
+});
+
+/*
+This is not a good practice because we are attaching multiple event listeners to multiple child elements. Same function is attached to each link element. This is not efficient and can cause performance issues when we have many child elements.
+
+Instead, we can use event delegation to attach a single event listener to the parent element.
+*/
+```
+
+**Solution using event delegation:** .
+
+Attach a single event listener to the parent element and use the event object to get the target element.
+
+```js run
+// 1. Add event listener to the common parent element
+document.querySelector(".nav__links").addEventListener("click", function (e) {
+  e.preventDefault();
+  // 2. Determine what element originated the event
+  if (e.target.classList.contains("nav__link")) {
+    // 3. Perform the desired action
+    const id = e.target.getAttribute("href");
+    document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+  }
+});
 ```
