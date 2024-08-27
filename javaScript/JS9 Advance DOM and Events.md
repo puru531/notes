@@ -695,7 +695,7 @@ This is because the click event bubbles up the DOM tree.
 */
 ```
 
-### Event Bubbling
+### Event Bubbling and Capturing example
 
 ```html
 <nav class="nav">
@@ -747,4 +747,21 @@ This is because the click event bubbles up the DOM tree.
 */
 ```
 
-192 - 11:35
+### Stopping Event Propagation
+
+Stopping event propagation is done using the `stopPropagation()` method of the event object. If we stop the event propagation, the event will not bubble up the DOM tree and will not trigger the event listeners on the parent elements.
+
+In the above example, if we stop the event propagation in the event listener of the link element, the event will not bubble up to the parent elements.
+
+```js run
+document.querySelector(".nav__link").addEventListener("click", function (e) {
+  e.stopPropagation(); // stop the event propagation --> the event will not bubble up to the parent elements.
+  this.style.backgroundColor = "orange";
+  console.log("LINK", e.target);
+});
+
+document.querySelector(".nav__links").addEventListener("click", function (e) {
+  this.style.backgroundColor = "blue";
+  console.log("CONTAINER", e.target);
+}); // this event listener will not be triggered
+```
