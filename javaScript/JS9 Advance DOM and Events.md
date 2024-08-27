@@ -853,3 +853,130 @@ document.querySelector(".nav__links").addEventListener("click", function (e) {
   }
 });
 ```
+
+# DOM Traversal
+
+DOM traversal is the process of navigating through the DOM tree to access the elements. It is used to access the parent, child, and sibling elements of an element.
+
+## Selecting Child Elements
+
+```html
+<div class="parent">
+  <div class="child">Child 1</div>
+  <div class="child">Child 2</div>
+  <div class="child">Child 3</div>
+</div>
+```
+
+### Selecting all child elements (including nested child elements)
+
+```js run
+const parent = document.querySlector(".parent");
+console.log(parent.querySelectorAll(".child")); // NodeList of all child elements of the parent element. --> This will return all the child elements having class "child", no matter how deep they are nested.
+```
+
+### Selecting only direct child elements
+
+```js run
+console.log(parent.childNodes); // NodeList of all child nodes of the parent element. --> This will return all the child nodes of the parent element, including text nodes and comment nodes.
+
+console.log(parent.children); // HTMLCollection of all child elements of the parent element. --> This will return only the child elements of the parent element, excluding text nodes and comment nodes.
+```
+
+### Selecting the first child element and setting its value
+
+```js run
+console.log(parent.firstChild); // first child node of the parent element. --> This will return the first child node of the parent element, including text nodes and comment nodes.
+
+console.log(parent.firstElementChild); // first child element of the parent element. --> This will return the first child element of the parent element, excluding text nodes and comment nodes.
+
+//we can alse set value to the first child element
+parent.firstElementChild.textContent = "New Child 1";
+parent.firstElementChild.style.color = "red";
+
+console.log(parent.children[0]); // first child element of the parent element. --> This will return the first child element of the parent element, excluding text nodes and comment nodes.
+```
+
+### Selecting the last child element and setting its value
+
+```js run
+console.log(parent.lastChild); // last child node of the parent element. --> This will return the last child node of the parent element, including text nodes and comment nodes.
+
+console.log(parent.lastElementChild); // last child element of the parent element. --> This will return the last child element of the parent element, excluding text nodes and comment nodes.
+
+//we can alse set value to the last child element
+parent.lastElementChild.textContent = "New Child 3";
+parent.lastElementChild.style.color = "blue";
+
+console.log(parent.children[parent.children.length - 1]); // last child element of the parent element. --> This will return the last child element of the parent element, excluding text nodes and comment nodes.
+```
+
+## Selecting Parent Elements (Going upwards)
+
+```html
+<div class="container">
+  <div class="parent">
+    <div class="child">Child 1</div>
+    <div class="child">Child 2</div>
+    <div class="child">Child 3</div>
+  </div>
+</div>
+```
+
+### Selecting direct parents
+
+```js run
+const child = document.querySelector(".child");
+console.log(child.parentNode); // parent node of the child element. --> This will return the parent node of the child element, including text nodes and comment nodes.
+
+console.log(child.parentElement); // both are same in this case
+```
+
+### Selecting the parent element which is not the direct parent
+
+```js run
+const child = document.querySelector(".child");
+console.log(child.closest(".container")); // will find the closest parent element with the class "container" of the child element.
+
+console.log(child.closest(".parent")).style.backgroundColor = "red"; // will find the closest parent element with the class "parent" of the child element and set its background color to red.
+```
+
+**querSelector() method is used to find the children no matter how deep they are nested. And closest() method is used to find the parent element no matter how far it is.**
+
+## Selecting Sibling Elements
+
+In JavaScript, we can only access direct sibling (next and previous sibling elements) of an element.
+
+```html
+<div class="container">
+  <div class="parent">
+    <div class="child--1">Child 1</div>
+    <div class="child--2">Child 2</div>
+    <div class="child--3">Child 3</div>
+  </div>
+</div>
+```
+
+```js run
+const child1 = document.querySelector(".child--1");
+
+console.log(child1.nextSibling); // next sibling node of the child1 element. --> This will return the next sibling node of the child1 element, including text nodes and comment nodes.
+console.log(child1.previousElementSibling); // previous sibling element of the child1 element.
+
+console.log(child1.nextSibling); // next sibling node of the child1 element. --> This will return the next sibling node of the child1 element, including text nodes and comment nodes.
+console.log(child1.nextElementSibling); // next sibling element of the child1 element.
+```
+
+OR we can use the parent element to access the sibling elements.
+
+```js run
+const child1 = document.querySelector(".child--1");
+console.log(child1.parentElement.children); // HTMLCollection of all child elements of the parent element.
+
+[...child1.parentElement.children].forEach(function (child) {
+  if (child !== child1) {
+    // change the color of all the siblings except the child1 element.
+    child.style.color = "red";
+  }
+});
+```
