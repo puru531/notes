@@ -980,3 +980,100 @@ console.log(child1.parentElement.children); // HTMLCollection of all child eleme
   }
 });
 ```
+
+## Passing arguments to event handlers
+
+```html
+<div class="container">
+  <button class="btn" data-id="1">Button 1</button>
+  <button class="btn" data-id="2">Button 2</button>
+  <button class="btn" data-id="3">Button 3</button>
+</div>
+```
+
+```js run
+// Adding opacity to the sibling elements of the button when hovered.
+const container = document.querySelector(".container");
+container.addEventListener("mouseover", function (e) {
+  if (e.target.classList.contains("btn")) {
+    const button = e.target;
+
+    //selecting sibling elements
+    const siblings = button.closest(".container").querySelectorAll(".btn");
+
+    //change opacity of all the sibling elements
+    siblings.forEach(function (sibling) {
+      if (sibling !== button) {
+        sibling.style.opacity = 0.5;
+      }
+    });
+  }
+});
+
+// Once opacity is set, we need to reset it when the mouse leaves the button.
+container.addEventListener("mouseout", function (e) {
+  if (e.target.classList.contains("btn")) {
+    const button = e.target;
+
+    //selecting sibling elements
+    const siblings = button.closest(".container").querySelectorAll(".btn");
+
+    //reset opacity of all the sibling elements
+    siblings.forEach(function (sibling) {
+      sibling.style.opacity = 1;
+    });
+  }
+});
+```
+
+Above code is repetitive, we can use a function to avoid repetition
+
+```js run
+const handleHover = function (e, opacity) {
+  if (e.target.classList.contains("btn")) {
+    const button = e.target;
+
+    //selecting sibling elements
+    const siblings = button.closest(".container").querySelectorAll(".btn");
+
+    //change opacity of all the sibling elements
+    siblings.forEach(function (sibling) {
+      if (sibling !== button) {
+        sibling.style.opacity = opacity;
+      }
+    });
+  }
+};
+
+// pass the opacity value as an argument to the event handler
+container.addEventListener("mouseover", function (e) {
+  handleHover(e, 0.5); // we can't pass the argument directly to the event handler, because it will be called with the event object as the first argument.
+});
+container.addEventListener("mouseout", function (e) {
+  handleHover(e, 1);
+});
+```
+
+OR We can use the bind() method to pass arguments to the event handler.
+
+```js run
+// bind() method is used to pass arguments to the event handler
+const handleHover = function (e) {
+  if (e.target.classList.contains("btn")) {
+    const button = e.target;
+
+    //selecting sibling elements
+    const siblings = button.closest(".container").querySelectorAll(".btn");
+
+    //change opacity of all the sibling elements
+    siblings.forEach(function (sibling) {
+      if (sibling !== button) {
+        sibling.style.opacity = this; // this refers to the argument passed to the bind() method
+      }
+    });
+  }
+};
+
+container.addEventListener("mouseover", handleHover.bind(0.5));
+container.addEventListener("mouseout", handleHover.bind(1)); // bind() method is used to pass arguments to the event handler, the value passed to the bind() method will be used as the value of 'this' in the event handler.
+```
