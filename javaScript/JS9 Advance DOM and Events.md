@@ -1077,3 +1077,40 @@ const handleHover = function (e) {
 container.addEventListener("mouseover", handleHover.bind(0.5));
 container.addEventListener("mouseout", handleHover.bind(1)); // bind() method is used to pass arguments to the event handler, the value passed to the bind() method will be used as the value of 'this' in the event handler.
 ```
+
+# Intersection Observer API
+
+Intersection Observer API is used to observe the visibility of an element in the viewport. It is used to detect when an element enters or exits the viewport.
+
+```html
+<body>
+  <nav class="nav">
+    <li class="link--1">menu 1</li>
+    <li class="link--2">menu 2</li>
+  </nav>
+  <section class="section section--1">Section 1</section>
+  <section class="section section--2">Section 2</section>
+</body>
+```
+
+```js run
+const observerCallback = function (entries, observer) {
+  // will called every time the observed element intersects with the root element.
+  // entries is an array of IntersectionObserverEntry objects.
+  // observer is the IntersectionObserver object.
+  entries.forEach(function (entry) {
+    if (entry.isIntersecting) {
+      entry.target.style.backgroundColor = "red";
+    } else {
+      entry.target.style.backgroundColor = "blue";
+    }
+  });
+};
+
+const observerOptions = {
+  root: null, // viewport --> target element to intersect with the observed element.
+  threshold: 0.1, // 10% of the element is visible
+};
+const observer = new IntersectionObserver(observerCallback, observerOptions);
+observer.observe(document.querySelector(".section--1"));
+```
