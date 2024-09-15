@@ -1026,10 +1026,11 @@ container.addEventListener("mouseout", function (e) {
 });
 ```
 
-Above code is repetitive, we can use a function to avoid repetition
+Above code is repetitive, we can use a function to avoid repetition by passing the opacity value as an argument to the event handler.
 
 ```js run
 const handleHover = function (e, opacity) {
+  //opacity as an argument
   if (e.target.classList.contains("btn")) {
     const button = e.target;
 
@@ -1109,8 +1110,240 @@ const observerCallback = function (entries, observer) {
 
 const observerOptions = {
   root: null, // viewport --> target element to intersect with the observed element.
-  threshold: 0.1, // 10% of the element is visible
+  threshold: 0.1, // 10% of the element is visible, also accepts an array of values. --> [0, 0.25] --> 0% and 25% of the element is visible.
+  rootMargin: "-100px", // margin around the root element. will intersect 100px before the threshold given --> "-100px" --> 100px outside the viewport. Also accepts an array of values. --> ["-100px", "100px"] --> 100px outside the viewport on all sides.
 };
 const observer = new IntersectionObserver(observerCallback, observerOptions);
 observer.observe(document.querySelector(".section--1"));
 ```
+
+## Reveal elements on scroll
+
+```html
+<body>
+  <nav class="nav">
+    <li class="link--1">menu 1</li>
+    <li class="link--2">menu 2</li>
+  </nav>
+  <section class="section section--1">Section 1</section>
+  <section class="section section--2">Section 2</section>
+</body>
+```
+
+```css
+.section--hidden {
+  opacity: 0;
+  transform: translateY(8rem);
+}
+/* 
+  This will hide the section elements by setting their opacity to 0 and moving them 8rem down. Once we remove the class "section--hidden" from the section elements, they will be revealed.
+*/
+```
+
+```js run
+const revealSection = function (entries, observer) {
+  entries.forEach(function (entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.remove("section--hidden"); // removing hidden class to reveal the section element.
+      observer.unobserve(entry.target); // stop observing the element once it is revealed.
+    }
+  });
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+document.querySelectorAll(".section").forEach(function (section) {
+  // adding section hidden class to all the section elements
+  section.classList.add("section--hidden");
+  sectionObserver.observe(section);
+});
+```
+
+## Lazy loading images
+
+```html
+<body>
+  <nav class="nav">
+    <li class="link--1">menu 1</li>
+    <li class="link--2">menu 2</li>
+  </nav>
+  <section class="section section--1">
+    Section 1
+    <img
+      src="image1.jpg"
+      alt="Image 1"
+      data-src="path-to/orignal-image.jpg"
+      class="lazy-img"
+    />
+  </section>
+  <section class="section section--2">
+    Section 2
+    <img
+      src="image2.jpg"
+      alt="Image 2"
+      data-src="path-to/orignal-image.jpg"
+      class="lazy-img"
+    />
+  </section>
+</body>
+```
+
+```css
+.lazy-img {
+  filter: blur(20px);
+}
+/* 
+This will apply a blur filter to the image elements. Once we set the src attribute of the image elements to the value of the data-src attribute, and the blur filter can be removed by removing rhe class "lazy-img".
+*/
+```
+
+```js run
+const imgTargets = document.querySelectorAll("ing[data-src]"); // select all the image elements with the data-src attribute.
+
+const loadImg = function (entries, observer) {
+  entries.forEach(function (entry) {
+    const [entry] = entries;
+    if (!entry.isIntersecting) return; // return if the element is not intersecting with the viewport.
+    const img = entry.target;
+
+    // set the src attribute of the image element to the value of the data-src attribute.
+    img.src = img.dataset.src;
+
+    // remove the lazy-img class to remove the blur filter.
+    // img.classList.remove("lazy-img"); // this will not work because the image is not loaded yet. An event is triggered when the image is loaded.
+    img.addEventListener("load", function () {
+      img.classList.remove("lazy-img");
+    });
+
+    observer.unobserve(img); // stop observing the element once the image is loaded.
+  });
+};
+
+const imageObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+});
+
+imgTargets.forEach(function (img) {
+  imageObserver.observe(img);
+});
+```
+
+# Lifecycle DOM Events
+
+Different events are fired at different stages of the lifecycle of the web page. These events are called lifecycle events.
+
+## DOMContentLoaded
+
+`DOMContentLoaded` event is fired when the initial HTML document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading.
+
+```js run
+document.addEventListener("DOMContentLoaded", function (e) {
+  console.log("HTML parsed and DOM tree built", e);
+});
+```
+
+## load
+
+`load` event is fired when the whole page has loaded, including all dependent resources such as stylesheets, images, and subframes.
+
+```js run
+window.addEventListener("load", function (e) {
+  console.log("Page fully loaded", e);
+});
+```
+
+## beforeunload
+
+`beforeunload` event is fired when the page is about to unload (leave the page). It is used to show a confirmation dialog to the user before leaving the page.
+
+```js run
+window.addEventListener("beforeunload", function (e) {
+  e.preventDefault(); // prevent the default behavior of the event.
+  e.returnValue = ""; // set the return value to an empty string. This will show a confirmation dialog to the user before leaving the page.
+});
+```
+
+# defer and async attributes in script tags
+
+`defer` and `async` attributes are used to control the loading of the script files. They are used to make the page load faster by loading the scripts asynchronously.
+
+Regular script tag:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Regular Script Tag</title>
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>
+<!-- Here the script.js file is loaded synchronously. The HTML parsing is paused until the script file is loaded and executed. -->
+```
+
+## async attribute
+
+`async` attribute is used to load the script asynchronously. It is used to load the script file without pausing the HTML parsing.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Async Attribute</title>
+    <script async src="script.js"></script>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>
+<!-- Here the script.js file is loaded asynchronously. The HTML parsing is not paused until the script file is loaded and executed. -->
+```
+
+## defer attribute
+
+`defer` attribute is used to defer the execution of the script until the HTML document has been completely parsed. It is used to ensure that the script is executed after the HTML document has been parsed.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Defer Attribute</title>
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>
+```
+
+How web page loads with regular, defer and async attributes when script is in head and body:
+
+**regular:**
+
+`<script src="script.js"></script>`
+
+HEAD : parsing --> pause --> download script.js --> execute script.js --> resume and finish parsing --> DOMContentLoaded --> load. `parsing stops for the execution of script.js`
+
+BODY : parsing --> download script.js --> execute script.js --> DOMContentLoaded --> load. `parsing comletes first then download and execute script.js`
+
+**async:**
+
+`<script async src="script.js"></script>`
+
+HEAD : parallel (parsing --> download script.js) --> pause --> execute script.js --> resume and finish parsing --> DOMContentLoaded --> load. `parsing and downloading of script.js happens simultaneously` but `execution of script.js stops the parsing`
+
+BODY: No difference between async and regular. `parsing comletes first then download and execute script.js`
+
+**defer:**
+
+`<script defer src="script.js"></script>`
+
+HEAD : parallel (parsing --> download script.js) --> DOMContentLoaded --> execute script.js --> load. `parsing is not affected by the script.js download happens in parallel and execution happens after parsing is completed`
+
+BODY : No difference between defer and regular. `parsing comletes first then download and execute script.js`
