@@ -200,3 +200,117 @@ Person {firstName: "Jonas", birthYear: 1991} __proto__: {calcAge: ƒ, species: "
 console.log(jonas.hasOwnProperty("firstName")); //true
 console.log(jonas.hasOwnProperty("species")); //false
 ```
+
+## Prototypal Inheritance and The Prototype Chain
+
+### Prototypal Inheritance
+
+Prototypal inheritance is a feature in JavaScript where objects can inherit properties and methods from other objects. This is different from classical inheritance found in languages like Java or C++, where classes inherit from other classes.
+
+In JavaScript, every object has a special internal property called [[Prototype]] (commonly accessed via **proto** or Object.getPrototypeOf). This property points to another object, which is its prototype. The prototype object can have its own prototype, forming a chain.
+
+### The Prototype Chain
+
+The prototype chain is a series of linked objects. When you try to access a property or method on an object, JavaScript will first look for that property on the object itself. If it doesn't find it, it will look at the object's prototype, and then the prototype's prototype, and so on, until it either finds the property or reaches the end of the chain (usually null).
+
+Here's an example to illustrate these concepts:
+
+```javascript
+// Define a prototype object
+const animal = {
+  eats: true,
+  walk() {
+    console.log("Animal walks");
+  },
+};
+
+// Create a new object that inherits from animal
+const rabbit = Object.create(animal);
+rabbit.jumps = true;
+
+console.log(rabbit.eats); // true (inherited from animal)
+console.log(rabbit.jumps); // true (own property)
+rabbit.walk(); // "Animal walks" (inherited method)
+```
+
+In the above example:
+
+- The `animal` object is the prototype of the `rabbit` object.
+- The `rabbit` object inherits the `eats` property and `walk` method from the `animal` object.
+- The `jumps` property is an own property of the `rabbit` object.
+- When accessing `rabbit.eats`, JavaScript first looks for the property on `rabbit`. Since it doesn't find it, it looks at the prototype (`animal`) and finds the property there.
+
+**Key Points**
+
+- **Prototype Property:** Functions in JavaScript have a prototype property that is used to build the [[Prototype]] chain.
+
+- **Constructor Functions:** When you use a constructor function with the new keyword, the newly created object’s [[Prototype]] is set to the constructor function’s prototype property.
+
+- **Object.create():** This method creates a new object with the specified prototype object and properties.
+
+**Example with Constructor Function**
+
+```javascript
+function Animal(name) {
+  this.name = name;
+}
+
+Animal.prototype.eats = true;
+Animal.prototype.walk = function () {
+  console.log(this.name + " walks");
+};
+
+const rabbit = new Animal("Rabbit");
+
+console.log(rabbit.eats); // true (inherited from Animal.prototype)
+rabbit.walk(); // "Rabbit walks" (inherited method)
+```
+
+In this example:
+
+1. The `Animal` function is a constructor function that sets the `name` property.
+2. `Animal.prototype` contains properties and methods that are inherited by objects created with `new Animal()`.
+3. The `rabbit` object is instance of `Animal` and inherits properties and methods from `Animal.prototype`.
+
+## Prototypal Inheritance in Built-in Objects
+
+```javascript
+const Person = function (firstName, birthYear) {
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
+
+Person.prototype.calcAge = function () {
+  console.log(2023 - this.birthYear);
+};
+
+const jonas = new Person("Jonas", 1991);
+
+console.log(jonas.__proto__); // Person {calcAge: ƒ, constructor: ƒ} -- Person.prototype
+console.log(jonas.__proto__.__proto__); // Object {constructor: ƒ} -- Object.prototype
+console.log(jonas.__proto__.__proto__.__proto__); // null -- End of prototype chain
+```
+
+### Prototype of Arrays
+
+```javascript
+const arr = [3, 6, 6, 5, 6, 9, 9];
+console.log(arr.__proto__); // Object {concat: ƒ, constructor: ƒ, find: ƒ, findIndex: ƒ, pop: ƒ, …}
+// Gets access to all the array methods from the prototype chain
+
+console.log(arr.__proto__ === Array.prototype); // true
+console.log(arr.__proto__.__proto__); // Object {constructor: ƒ} -- Object.prototype
+```
+
+We can also add methods to the prototype chain of built-in objects.
+
+```javascript
+Array.prototype.unique = function () {
+  return [...new Set(this)];
+};
+
+const arr = [3, 6, 6, 5, 6, 9, 9];
+console.log(arr.unique()); // [3, 6, 5, 9]
+```
+
+//214
