@@ -313,4 +313,147 @@ const arr = [3, 6, 6, 5, 6, 9, 9];
 console.log(arr.unique()); // [3, 6, 5, 9]
 ```
 
-//214
+# ES6 Classes
+
+Classes in JavaScript do not work like classes in other programming languages. They are just syntactic sugar over the existing prototype-based inheritance. Classes are a template for creating objects, and they encapsulate data with methods for working with that data.
+
+Behind the scenes classes are still special type of functions, and the methods are added to the prototype property of the class.
+
+**Classes are not hoisted, and they are first-class citizens in JavaScript.**
+
+**Classes are executed in strict mode.**
+
+## Class Expression
+
+```javascript
+const PersonCl = class {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+};
+```
+
+## Class Declaration
+
+```javascript
+class Person {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+
+  // Methods -- These methods are added to the prototype property of the class
+  calcAge() {
+    console.log(2023 - this.birthYear);
+  }
+}
+
+// Creating an instance
+const jessica = new Person("Jessica", 1996); // Person {firstName: "Jessica", birthYear: 1996}
+
+// calcAge method is in the prototype chain
+console.log(jessica); // Person {firstName: "Jessica", birthYear: 1996, __proto__: Person, calcAge: ƒ}
+```
+
+### Manually adding methods to the prototype chain
+
+```javascript
+Person.prototype.greet = function () {
+  console.log(`Hey ${this.firstName}`);
+};
+
+jessica.greet(); // Hey Jessica
+```
+
+## Getters and Setters
+
+Every object in JavaScript can getters and setters. Getters are used to get the properties of an object, and setters are used to set the properties of an object. These properties can also be called as accessor properties, while other properties are called data properties.
+
+A function that is used to get the value of a property is called a getter.
+
+A function that is used to set the value of a property is called a setter.
+
+### Getters and Setters in Objects
+
+```javascript
+const account = {
+  owner: "Jonas",
+  movements: [200, 530, 120, 300],
+
+  get latest: function () {
+    return this.movements.slice(-1).pop();
+  },
+
+  set latest(mov) {
+    this.movements.push(mov);
+  }
+}
+
+//using getter
+console.log(account.latest); // 300
+
+//using setter
+account.latest = 50;
+```
+
+### Getters and Setters in Classes
+
+```javascript
+class Person {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+
+  // Getter
+  get age() {
+    return 2023 - this.birthYear;
+  }
+
+  // Setter
+  set fullName(name) {
+    // Whenever we set the full name, this setter will be called
+    if (name.includes(" ")) this._fullName = name;
+    // _fullName is a convention to indicate that this is a private property, since fullName is a public property we can't use the same name
+    else alert(`${name} is not a full name!`);
+  }
+
+  get fullName() {
+    return this._fullName; // Getter for the private property
+  }
+}
+
+const jessica = new Person("Jessica Davis", 1996);
+console.log(jessica.age); // 27
+
+const walter = new Person("Walter", 1965); // Walter is not a full name!
+```
+
+## Static Methods
+
+Static methods are methods that are called on the class itself, and not on the instances of the class. They are often used as utility functions that are not tied to a particular instance of the class.
+
+```javascript
+class Person {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+
+  // Instance method
+  calcAge() {
+    return 2023 - this.birthYear;
+  }
+
+  // Static method
+  static hey() {
+    console.log("Hey there 👋");
+  }
+}
+
+Person.hey(); // Hey there 👋
+
+const jessica = new Person("Jessica Davis", 1996);
+jessica.hey(); // TypeError: jessica.hey is not a function -- Static methods are not available on instances
+```
