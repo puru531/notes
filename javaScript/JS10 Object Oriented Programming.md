@@ -457,3 +457,70 @@ Person.hey(); // Hey there 👋
 const jessica = new Person("Jessica Davis", 1996);
 jessica.hey(); // TypeError: jessica.hey is not a function -- Static methods are not available on instances
 ```
+
+# Object.create()
+
+Another way to create prototypal inheritance in JavaScript.
+
+A simple and clean way to create objects with a specified prototype is to use the `Object.create()` method. This method creates a new object with the specified prototype object and properties.
+
+**NO prototype property is used here.**
+
+**NO constructor function is used here.**
+
+**NO new keyword is used here.**
+
+We use `Object.create()` to create to manually set the prototype of an object to any other object.
+
+```javascript
+const PersonProto = {
+  calcAge() {
+    console.log(2023 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+// easy way to create objects with a specified prototype
+const steven = Object.create(PersonProto); // Creates a new object with PersonProto as its prototype
+console.log(steven); // { __proto__: calcAge: f} -- Empty object with PersonProto as its prototype
+steven.name = "Steven";
+steven.birthYear = 2002;
+steven.calcAge(); // 21
+
+console.log(steven.__proto__ === PersonProto); // true
+
+const sarah = Object.create(PersonProto);
+sarah.init("Sarah", 1979);
+sarah.calcAge(); // 44
+```
+
+# Inheritance
+Inheritance is a mechanism in which one class acquires the properties and behavior of another class. It represents the "is-a" relationship between classes. For example, a `Car` class can inherit properties and methods from a `Vehicle` class. This helps to reuse code and establish a hierarchical relationship between classes.
+
+## Inheritance Between "Classes": Constructor Functions
+```javascript
+const Student = function (firstName, birthYear, course) {
+  // this.firstName = firstName;
+  // this.birthYear = birthYear;
+   Person.call(this, firstName, birthYear); // Call the Person constructor function with the this keyword set to the Student object
+  this.course = course;
+};
+
+Student.prototype.introduce = function () {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+}
+
+const mike = new Student("Mike", 2020, "Computer Science");
+console.log(mike); // Student {firstName: "Mike", birthYear: 2020, course: "Computer Science"}
+mike.introduce(); // My name is Mike and I study Computer Science.
+```
+
+## Inheritance Between "Classes": ES6 Classes
+
+## Inheritance Between "Classes": Object.create()
+
+- 219 lecture
