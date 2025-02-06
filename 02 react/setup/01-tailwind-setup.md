@@ -46,3 +46,23 @@ Add on top of the file:
 @tailwind components;
 @tailwind utilities;
 ```
+
+---
+
+## Enable sorting of tailwindcss classes in VSCode
+
+Install Prettier and Tailwind CSS IntelliSense extensions in VSCode.
+
+1. Install Prettier.
+
+```bash
+npm install -D prettier prettier-plugin-tailwindcss
+```
+
+2. Create a `.prettierrc` file in the root of your project and add the following configuration.
+
+```json
+{
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
+```
